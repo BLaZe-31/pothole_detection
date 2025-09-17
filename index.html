@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Civic Issue Detection</title>
+<style>
+    /* --- Dark Theme & Layout --- */
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #121212;
+        color: #e0e0e0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        padding: 40px 20px;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        color: #bb86fc;
+    }
+
+    .upload-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        background-color: #1e1e1e;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    input[type="file"] {
+        color: #e0e0e0;
+    }
+
+    button {
+        padding: 10px 25px;
+        border: none;
+        border-radius: 8px;
+        background-color: #bb86fc;
+        color: #121212;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    button:hover {
+        background-color: #9a67ea;
+    }
+
+    img#resultImg {
+        margin-top: 20px;
+        max-width: 100%;
+        border: 3px solid #bb86fc;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.7);
+    }
+
+    .footer {
+        margin-top: auto;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+        color: #888;
+    }
+</style>
+</head>
+<body>
+<h1>Civic Issue Detection</h1>
+
+<div class="upload-container">
+    <input type="file" id="fileInput" accept="image/*">
+    <button onclick="uploadImage()">Detect</button>
+    <img id="resultImg" alt="Annotated Image will appear here">
+</div>
+
+<div class="footer">
+    Hackathon Demo &copy; 2025
+</div>
+
+<script>
+async function uploadImage() {
+    const input = document.getElementById("fileInput");
+    const file = input.files[0];
+    if (!file) return alert("Please select an image.");
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+        const response = await fetch("http://127.0.0.1:8000/detect/", {
+            method: "POST",
+            body: formData
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            throw new Error(`HTTP ${response.status}: ${text}`);
+        }
+
+        const blob = await response.blob();
+        document.getElementById("resultImg").src = URL.createObjectURL(blob);
+
+    } catch (err) {
+        console.error("Upload Error:", err);
+        alert("Something went wrong: " + err.message);
+    }
+}
+
+</script>
+
+</body>
+</html>
