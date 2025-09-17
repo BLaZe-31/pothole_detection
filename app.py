@@ -22,7 +22,7 @@ async def read_index():
     return FileResponse("index.html")
 
 # Static files (if needed for CSS/JS)
-app.mount("/static", StaticFiles(directory="."), name="static")
+#app.mount("/static", StaticFiles(directory="."), name="static")
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -30,6 +30,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 model = YOLO("runs/detect/civic_issue_model/weights/best.pt")
 
 @app.post("/detect")
+@app.post("/detect/")
 async def detect(file: UploadFile = File(...)):
     file_path = os.path.join(UPLOAD_FOLDER, file.filename)
     with open(file_path, "wb") as f:
