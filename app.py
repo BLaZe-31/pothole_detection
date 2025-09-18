@@ -21,6 +21,11 @@ app.add_middleware(
 async def read_index():
     return FileResponse("index.html")
 
+@app.get("/ping")
+async def ping():
+    return {"status": "alive"}
+
+
 # Static files (if needed for CSS/JS)
 #app.mount("/static", StaticFiles(directory="."), name="static")
 
