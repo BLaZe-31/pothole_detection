@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from ultralytics import YOLO
 import cv2, io, os
-
+from fastapi.responses import JSONResponse
 app = FastAPI()
 
 # CORS
@@ -17,13 +17,16 @@ app.add_middleware(
 )
 
 # Serve index.html
-@app.get("/")
+
+
+@app.api_route("/ping", methods=["GET", "HEAD"])
+async def ping():
+    return JSONResponse(content={"status": "alive"})
+
+@app.api_route("/", methods=["GET", "HEAD"])
 async def read_index():
     return FileResponse("index.html")
 
-@app.get("/ping")
-async def ping():
-    return {"status": "alive"}
 
 
 # Static files (if needed for CSS/JS)
